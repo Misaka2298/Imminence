@@ -16,3 +16,6 @@
 *.aab
 *.jks
 *.keystore
+
+# 签名信息（密钥路径与密码）
+/keystore.properties
