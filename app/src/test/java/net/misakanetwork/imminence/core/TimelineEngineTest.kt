@@ -18,13 +18,24 @@ class TimelineEngineTest {
 
     private val base = 1_700_000_000_000L
 
-    private fun event(offset: Long, type: Int, pkg: String) = RawEvent(base + offset, type, pkg)
+    private fun event(offset: Long, type: Int, pkg: String = "") = RawEvent(base + offset, type, pkg)
+
+    private fun makeEngine(
+        sink: FakeSink,
+        excluded: Set<String> = emptySet(),
+        ignored: Set<String> = emptySet(),
+    ) = TimelineEngine(
+        sink = sink,
+        excluded = { excluded },
+        ignored = { ignored },
+    )
 
     @Test
     fun `switching app settles the previous interval`() {
         val sink = FakeSink()
-        val engine = TimelineEngine(sink) { emptySet() }
-        engine.start(base)
+        val engine = makeEngine(sink)
+        // 游标放在第一个事件之前，否则 base 时刻的事件会被 ts <= lastTs 丢掉
+        engine.start(base - 1)
 
         engine.onEvents(listOf(event(0, RawEvent.RESUMED, "a")))
         engine.onEvents(listOf(event(10_000, RawEvent.RESUMED, "b")))
@@ -38,8 +49,9 @@ class TimelineEngineTest {
     @Test
     fun `screen off stops the clock`() {
         val sink = FakeSink()
-        val engine = TimelineEngine(sink) { emptySet() }
-        engine.start(base)
+        val engine = makeEngine(sink)
+        // 游标放在第一个事件之前，否则 base 时刻的事件会被 ts <= lastTs 丢掉
+        engine.start(base - 1)
 
         engine.onEvents(
             listOf(
@@ -55,8 +67,9 @@ class TimelineEngineTest {
     @Test
     fun `excluded package pauses the clock and is not attributed`() {
         val sink = FakeSink()
-        val engine = TimelineEngine(sink) { setOf("self") }
-        engine.start(base)
+        val engine = makeEngine(sink, excluded = setOf("self"))
+        // 游标放在第一个事件之前，否则 base 时刻的事件会被 ts <= lastTs 丢掉
+        engine.start(base - 1)
 
         engine.onEvents(listOf(event(0, RawEvent.RESUMED, "a")))
         engine.onEvents(listOf(event(5_000, RawEvent.RESUMED, "self")))
@@ -71,8 +84,9 @@ class TimelineEngineTest {
     @Test
     fun `keyguard state comes from the system and gates counting`() {
         val sink = FakeSink()
-        val engine = TimelineEngine(sink) { emptySet() }
-        engine.start(base)
+        val engine = makeEngine(sink)
+        // 游标放在第一个事件之前，否则 base 时刻的事件会被 ts <= lastTs 丢掉
+        engine.start(base - 1)
 
         engine.onEvents(listOf(event(0, RawEvent.RESUMED, "a")))
         assertTrue(engine.isRunning)
@@ -88,12 +102,13 @@ class TimelineEngineTest {
     @Test
     fun `transient system ui does not clear the current app`() {
         val sink = FakeSink()
-        val engine = TimelineEngine(
-            sink = sink,
-            excluded = { setOf("self", "launcher") },
-            ignored = { setOf("sysui") },
+        val engine = makeEngine(
+            sink,
+            excluded = setOf("self", "launcher"),
+            ignored = setOf("sysui"),
         )
-        engine.start(base)
+        // 游标放在第一个事件之前，否则 base 时刻的事件会被 ts <= lastTs 丢掉
+        engine.start(base - 1)
 
         engine.onEvents(listOf(event(0, RawEvent.RESUMED, "a")))
         // 下拉通知栏：sysui 抢到前台，但收起时不会补发 a 的 RESUMED
@@ -106,8 +121,9 @@ class TimelineEngineTest {
     @Test
     fun `resume while the screen is off is ignored`() {
         val sink = FakeSink()
-        val engine = TimelineEngine(sink) { emptySet() }
-        engine.start(base)
+        val engine = makeEngine(sink)
+        // 游标放在第一个事件之前，否则 base 时刻的事件会被 ts <= lastTs 丢掉
+        engine.start(base - 1)
 
         engine.onEvents(listOf(event(0, RawEvent.RESUMED, "wechat")))
         engine.syncScreenState(false) // 用户锁屏
@@ -123,8 +139,9 @@ class TimelineEngineTest {
     @Test
     fun `repeated events are not double counted`() {
         val sink = FakeSink()
-        val engine = TimelineEngine(sink) { emptySet() }
-        engine.start(base)
+        val engine = makeEngine(sink)
+        // 游标放在第一个事件之前，否则 base 时刻的事件会被 ts <= lastTs 丢掉
+        engine.start(base - 1)
 
         engine.onEvents(listOf(event(0, RawEvent.RESUMED, "a")))
         engine.onEvents(listOf(event(0, RawEvent.RESUMED, "a")))
