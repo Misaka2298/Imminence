@@ -1,0 +1,18 @@
+*.iml
+.gradle/
+/project.properties
+/local.properties
+/.idea/
+.DS_Store
+/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+/app/build/
+
+# 构建产物走 GitHub Releases，不进仓库
+/app/release/
+*.apk
+*.aab
+*.jks
+*.keystore

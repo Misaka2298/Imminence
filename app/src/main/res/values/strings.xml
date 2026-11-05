@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Imminence</string>
+    <string name="intro">在悬浮窗里显示当前前台应用今天累计的使用时长，单位为分钟。授权一次之后常驻后台，几乎不耗电。</string>
+
+    <string name="perm_usage_title">使用情况访问</string>
+    <string name="perm_usage_desc">读取前台应用切换事件，是统计的唯一数据来源。</string>
+    <string name="perm_overlay_title">悬浮窗</string>
+    <string name="perm_overlay_desc">在其它应用之上显示用时。</string>
+    <string name="perm_notify_title">通知</string>
+    <string name="perm_notify_desc">前台服务需要一条常驻通知，Android 13 起需要授权。</string>
+    <string name="perm_battery_title">忽略电池优化</string>
+    <string name="perm_battery_desc">避免息屏后被冻结，同时允许服务被杀后自动重启。必须开启。</string>
+    <string name="perm_autostart_title">允许自启动</string>
+    <string name="perm_autostart_desc">部分厂商系统需要手动放行，重启后才会自动恢复统计。</string>
+
+    <string name="state_on">已开启</string>
+    <string name="state_off">去开启</string>
+    <string name="state_settings">设置</string>
+
+    <string name="action_show_overlay">显示今日使用时间</string>
+    <string name="action_hide_overlay">隐藏今日使用时间</string>
+
+    <string name="status_running">服务运行中</string>
+    <string name="status_stopped">服务未运行</string>
+    <string name="status_missing">还需要必要权限</string>
+
+    <string name="overlay_minutes">%1$dmin</string>
+    <string name="overlay_hours">%1$dh</string>
+    <string name="overlay_hours_minutes">%1$dh%2$dmin</string>
+    <string name="overlay_less_than_minute">&lt;1min</string>
+
+    <string name="notif_channel">统计服务</string>
+    <string name="notif_title">Imminence 正在统计</string>
+    <string name="notif_text">悬浮窗显示当前应用今日用时</string>
+    <string name="notif_action_hide">隐藏悬浮窗</string>
+    <string name="notif_action_show">显示悬浮窗</string>
+    <string name="notif_action_stop">停止</string>
+
+    <string name="toast_need_usage">请先授予「使用情况访问」权限</string>
+    <string name="toast_need_overlay">请先授予「悬浮窗」权限</string>
+    <string name="toast_autostart_unavailable">当前系统未找到自启动设置入口，请手动允许后台运行。</string>
+</resources>
